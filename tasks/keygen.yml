@@ -1,0 +1,16 @@
+- name: Create .ssh folder
+  file:
+    path: '~/.ssh'
+    state: directory
+    mode: '700'
+
+- name: Generate ssh key pair
+  command: 'ssh-keygen -N "" -f ~/.ssh/{{ client_name }}'
+  args:
+    creates: '~/.ssh/{{ client_name }}'
+
+- name: Copy public key
+  command: 'cat ~/.ssh/{{ client_name }}.pub'
+  register: public_key
+- set_fact:
+     client_key: '{{ public_key.stdout }}'

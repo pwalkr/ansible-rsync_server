@@ -1,0 +1,6 @@
+# User for which to install rsync_server. Default "root" is actually safe, as
+# clients are restricted to a sub-directory of the rss_root
+rss_user: root
+
+# Path to root of rsync_server backups
+rss_root: /opt/rsync_server

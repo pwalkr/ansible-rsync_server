@@ -1,0 +1,32 @@
+branches:
+  only:
+    - master
+    - /^feature\/.*$/
+
+language: minimal
+
+services:
+  - docker
+
+install:
+  - ssh-keygen -N '' -f tests/minion/controller
+  - docker build --tag controller --build-arg id_rsa="$(cat tests/minion/controller)"              tests/minion
+  - docker build --tag client     --build-arg authorized_keys="$(cat tests/minion/controller.pub)" tests/minion
+  - docker build --tag server     --build-arg authorized_keys="$(cat tests/minion/controller.pub)" tests/minion
+
+  - docker network create test
+
+  - docker run --name controller --volume "$PWD:/etc/ansible/roles/rsync_server:ro" --network test --detach controller
+  - docker exec controller apt-get install --yes --no-install-recommends ansible
+  - docker exec controller sed -i 's/#host_key_checking/host_key_checking/' /etc/ansible/ansible.cfg
+  - (docker exec -i controller sh -c "cat > /etc/ansible/hosts") < tests/hosts
+
+  - docker run --name client --network test --detach client
+  - docker run --name server --network test --detach server
+
+script:
+  - docker exec controller env ANSIBLE_FORCE_COLOR=1 ansible-playbook /etc/ansible/roles/rsync_server/tests/server.yml -v --syntax-check
+  - docker exec controller env ANSIBLE_FORCE_COLOR=1 ansible-playbook /etc/ansible/roles/rsync_server/tests/client.yml -v --syntax-check
+
+  - docker exec controller env ANSIBLE_FORCE_COLOR=1 ansible-playbook /etc/ansible/roles/rsync_server/tests/server.yml -v
+  - docker exec controller env ANSIBLE_FORCE_COLOR=1 ansible-playbook /etc/ansible/roles/rsync_server/tests/client.yml -v
