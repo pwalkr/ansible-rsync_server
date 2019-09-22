@@ -5,6 +5,8 @@ RUN apt-get install --no-install-recommends --yes \
     openssh-server \
     python
 
+RUN apt-get install --no-install-recommends --yes rsync ansible
+
 COPY start.sh /usr/local/bin
 ENTRYPOINT /usr/local/bin/start.sh
 

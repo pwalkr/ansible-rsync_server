@@ -1,6 +1,6 @@
-- name: Install rsync
-  apt:
-    name: rsync
+#- name: Install rsync
+#  apt:
+#    name: rsync
 
 - name: Generate client ssh key
   include_tasks: keygen.yml

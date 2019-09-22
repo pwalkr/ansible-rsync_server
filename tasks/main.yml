@@ -1,6 +1,6 @@
-- name: Install rsync
-  apt:
-    name: rsync
+#- name: Install rsync
+#  apt:
+#    name: rsync
 
 - name: 'Create server root ({{ rss_root }})'
   file:
