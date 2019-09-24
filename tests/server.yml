@@ -1,0 +1,6 @@
+---
+- hosts: server
+  tasks:
+    - include_role:
+        name: rsync_server
+

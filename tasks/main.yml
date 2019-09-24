@@ -1,0 +1,10 @@
+- name: Install rsync
+  apt:
+    name: rsync
+
+- name: 'Create server root ({{ rss_root }})'
+  file:
+    path: '{{ rss_root }}'
+    owner: '{{ rss_user }}'
+    state: directory
+    mode: '700'
