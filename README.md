@@ -40,3 +40,16 @@ the server host. Setup with defaults (or "optional" if not required):
 An ssh key will be created and installed at `~/.ssh/{{ client_name }}` on the
 client, and the public key will be installed to the server's `authorized_keys`
 with `command=` restriction.
+
+### Initial Sync
+
+Include `sync.yml` for each folder the client backs up to run an initial sync
+for provisioning new systems. The tasks will only sync if the destination is
+empty or does not exist.
+
+    - include_role:
+        name: rsync_server
+        tasks_from: sync.yml
+      vars:
+        src: /          # Path on server, relative to root of client's folder
+        dest: /opt/app  # Path on client
