@@ -1,30 +1,9 @@
-# Tasks to set up an rsync server client
-#
-# This creates a folder that the client/application can rsync files to/from, and
-# restricts access to the folder via ssh authorized_keys. Usage:
-#
-# include_role:
-#   name: rsync_server
-#   tasks_from: client.yml
-# vars:
-#   client_name: name of backup set - appended to rss_root on server
-#   client_key: (optional) key to associate with this client
-#   rss_server: the ansible host providing main rsync_server role
-#   rss_user: (optional) user the rsync server runs as. Will gain command=
-#             restricted ssh keys. Must have write-access to rss_root.
-#   rss_root: (optional) root path to backups on server. Must be the same across
-#             clients and the server
-#
-# If client_key is not defined, a client_name key will be created and installed
-# at '~/.ssh/{{ client_name }}'
-
 - name: Install rsync
   apt:
     name: rsync
 
-- name: Generate client ssh key if undefined
+- name: Generate client ssh key
   include_tasks: keygen.yml
-  when: client_key is undefined
 
 - name: Scan server key for known_hosts
   command: 'ssh-keyscan {{ rss_server }}'
@@ -54,6 +33,6 @@
     - name: Set authorized_keys command
       authorized_key:
         user: '{{ rss_user }}'
-        key: '{{ client_key }}'
+        key: '{{ client_pub_key }}'
         key_options: 'command="/usr/bin/rsync --server --daemon --config={{ rsyncd_conf }} .",restrict'
   delegate_to: '{{ rss_server }}'

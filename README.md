@@ -33,11 +33,10 @@ the server host. Setup with defaults (or "optional" if not required):
         tasks_from: client.yml
     - vars:
         client_name:    # name of backup set
-        client_key:     # (optional) public key to identify this client
         rss_server:     # the ansible host providing main rsync_server role
         rss_user: root  # user as which the rsync server runs
         rss_root: /opt/rsync_server  # root path to backups on server
 
-If `client_key` is not defined, a `client_name` ssh key will be created and
-installed at `~/.ssh/{{ client_name }}`. The public key will be installed to the
-server's `authorized_keys`.
+An ssh key will be created and installed at `~/.ssh/{{ client_name }}` on the
+client, and the public key will be installed to the server's `authorized_keys`
+with `command=` restriction.

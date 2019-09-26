@@ -4,3 +4,6 @@ rss_user: root
 
 # Path to root of rsync_server backups
 rss_root: /opt/rsync_server
+
+# Path to private key on client
+client_key_file: '~/.ssh/{{ client_name }}'
