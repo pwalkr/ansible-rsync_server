@@ -8,9 +8,11 @@
   command: 'ssh-keygen -N "" -f {{ client_key_file }}'
   args:
     creates: '{{ client_key_file }}'
+  register: keygen
 
 - name: Copy public key
   command: 'cat {{ client_key_file }}.pub'
   register: public_key
+  changed_when: keygen is changed
 - set_fact:
      client_pub_key: '{{ public_key.stdout }}'
