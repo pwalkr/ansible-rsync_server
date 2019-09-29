@@ -26,15 +26,6 @@
   include_tasks: keygen.yml
   when: client_key is undefined
 
-- name: Scan server key for known_hosts
-  command: 'ssh-keyscan {{ rss_server }}'
-  register: key_scan
-
-- name: Add server key to client's known_hosts
-  known_hosts:
-    name: "{{ rss_server }}"
-    key: "{{ key_scan.stdout }}"
-
 - name: Register client with server
   block:
     - name: Create client backup root

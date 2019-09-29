@@ -1,0 +1,13 @@
+# Run ssh-keyscan against server to populate known_hosts
+
+# This is intended to be run separately because there are security implications
+# to re-scanning the host every time.
+
+- name: Scan server key for known_hosts
+  command: 'ssh-keyscan {{ rss_server }}'
+  register: key_scan
+
+- name: Add server key to client's known_hosts
+  known_hosts:
+    name: "{{ rss_server }}"
+    key: "{{ key_scan.stdout }}"

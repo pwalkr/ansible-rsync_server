@@ -41,3 +41,16 @@ the server host. Setup with defaults (or "optional" if not required):
 If `client_key` is not defined, a `client_name` ssh key will be created and
 installed at `~/.ssh/{{ client_name }}`. The public key will be installed to the
 server's `authorized_keys`.
+
+### Utilities
+
+**keyscan.yml**: these tasks will scan `rss_server` from the client and install
+the keys to client's `known_hosts`. This should be done separately, in an
+initial-setup play, to ensure the client will talk to the server (otherwise,
+first connection may hang on the prompt to add a new host).
+
+    - include_role:
+        name: rsync_server
+        tasks_from: keyscan.yml
+    - vars:
+        rss_server:  # the ansible host providing main rsync_server role

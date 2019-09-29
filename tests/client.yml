@@ -1,6 +1,13 @@
 ---
 - hosts: client
   tasks:
+    - name: Update client known_hosts (call per-client in an initial setup play)
+      include_role:
+        name: rsync_server
+        tasks_from: keyscan.yml
+      vars:
+        rss_server: server
+
     - include_role:
         name: rsync_server
         tasks_from: client.yml
