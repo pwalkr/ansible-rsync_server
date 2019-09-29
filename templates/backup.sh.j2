@@ -8,7 +8,7 @@
 
 rsync --archive --delete --rsh="ssh -i {{ client_key_file }}" \
     {{ src }} \
-    rsync://{{ hostvars[rss_server].ansible_host | default(rss_server) }}/{{ client_name }}/{{ dest }}
+    rsync://{{ rss_server_host }}/{{ client_name }}/{{ dest }}
 
 {% if postsync is defined %}
 {% for command in postsync %}

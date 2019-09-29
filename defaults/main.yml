@@ -5,5 +5,8 @@ rss_user: root
 # Path to root of rsync_server backups
 rss_root: /opt/rsync_server
 
+# Used for client -> server operations, should be resolvable by client
+rss_server_host: '{{ hostvars[rss_server].ansible_host | default(rss_server) }}'
+
 # Path to private key on client
 client_key_file: '~/.ssh/{{ client_name }}'
