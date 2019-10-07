@@ -33,24 +33,36 @@ the server host. Setup with defaults (or "optional" if not required):
         tasks_from: client.yml
     - vars:
         client_name:    # name of backup set
-        client_key:     # (optional) public key to identify this client
         rss_server:     # the ansible host providing main rsync_server role
         rss_user: root  # user as which the rsync server runs
         rss_root: /opt/rsync_server  # root path to backups on server
 
-If `client_key` is not defined, a `client_name` ssh key will be created and
-installed at `~/.ssh/{{ client_name }}`. The public key will be installed to the
-server's `authorized_keys`.
+An ssh key will be created and installed at `~/.ssh/{{ client_name }}` on the
+client, and the public key will be installed to the server's `authorized_keys`
+with `command=` restriction.
 
 ### Utilities
 
-**keyscan.yml**: these tasks will scan `rss_server` from the client and install
-the keys to client's `known_hosts`. This should be done separately, in an
-initial-setup play, to ensure the client will talk to the server (otherwise,
-first connection may hang on the prompt to add a new host).
+#### keyscan.yml
+
+These tasks will scan `rss_server` from the client and install the keys to
+client's `known_hosts`. This should be done separately, in an initial-setup
+play, to ensure the client will talk to the server (otherwise, first connection
+may hang on the prompt to add a new host).
 
     - include_role:
         name: rsync_server
         tasks_from: keyscan.yml
-    - vars:
-        rss_server:  # the ansible host providing main rsync_server role
+
+#### sync.yml
+
+Include for each folder the client backs up to run an initial sync for
+provisioning new systems. The tasks will only sync if the destination is empty
+or does not exist.
+
+    - include_role:
+        name: rsync_server
+        tasks_from: sync.yml
+      vars:
+        src: /          # Path on server, relative to root of client's folder
+        dest: /opt/app  # Path on client

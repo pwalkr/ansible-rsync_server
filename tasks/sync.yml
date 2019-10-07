@@ -1,0 +1,27 @@
+# Synchronize for initial data population
+
+# These are client_name -aware tasks that will only synchronize if the directory
+# doesn't already exist.
+
+- name: Check if destination exists
+  stat:
+    path: '{{ dest }}'
+  register: dest_stats
+
+- name: Check if destination has content
+  find:
+    paths: '{{ dest }}'
+  register: dest_content
+  when: dest_stats.stat.exists
+
+- name: 'Restore {{ dest }} if not already present'
+  synchronize:
+    mode: pull
+    src: 'rsync://{{ rss_user }}@{{ hostvars[rss_server].ansible_host | default(rss_server) }}/{{ client_name }}/{{ src }}'
+    dest: '{{ dest }}'
+    # private_key gets ignored here
+    rsync_opts:
+      - '-e'
+      - 'ssh -i {{ client_key_file }}'
+  delegate_to: '{{ inventory_hostname }}'
+  when: not dest_stats.stat.exists or dest_content.matched == 0

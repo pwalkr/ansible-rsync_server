@@ -1,5 +1,8 @@
 ---
 - hosts: client
+  vars:
+    rss_server: server
+    client_name: testapp
   tasks:
     - name: Update client known_hosts (call per-client in an initial setup play)
       include_role:
@@ -11,9 +14,6 @@
     - include_role:
         name: rsync_server
         tasks_from: client.yml
-      vars:
-        client_name: testapp
-        rss_server: server
 
     - name: Seed client with data to backup
       file:
@@ -31,22 +31,13 @@
         path: /opt/testapp
         state: absent
 
-    - name: Check if we need to sync
-      stat:
-        path: /opt/testapp
-      register: app_stats
-
     - name: Test typical restore-sync for initial data population
-      synchronize:
-        mode: pull
-        src: rsync://server/testapp/
+      include_role:
+        name: rsync_server
+        tasks_from: sync.yml
+      vars:
+        src: /
         dest: /opt/testapp/
-        # private_key gets ignored here
-        rsync_opts:
-          - '-e'
-          - 'ssh -i ~/.ssh/testapp'
-      when: not app_stats.stat.exists
-      delegate_to: client
 
     - name: Trying to pull root should return list of modules
       command: 'rsync --archive --delete -e="ssh -i ~/.ssh/testapp" rsync://root@server/ /opt/testapp/'
