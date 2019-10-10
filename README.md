@@ -43,6 +43,21 @@ with `command=` restriction.
 
 ### Utilities
 
+#### backup.yml
+
+Install a simple backup script to backup folder to server. `script_dest` can
+then be called periodically by cron or systemd timer.
+
+    - include_role:
+        name: rsync_server
+        tasks_from: backup.yml
+      vars:
+        script_dest: /usr/local/bin/backup-app.sh
+        src: /opt/app/  # Path on client. Mind the trailing slash
+        dest: /         # Path on server, relative to root of client's folder
+        presync: []     # optional array of shell commands to run before backup
+        postsync: []    # optional array of shell commands to run after backup
+
 #### keyscan.yml
 
 These tasks will scan `rss_server` from the client and install the keys to
