@@ -4,17 +4,6 @@
     rss_server: server
     client_name: testapp
   tasks:
-    - name: Update client known_hosts (call per-client in an initial setup play)
-      include_role:
-        name: rsync_server
-        tasks_from: keyscan.yml
-      vars:
-        rss_server: server
-
-    - include_role:
-        name: rsync_server
-        tasks_from: client.yml
-
     - name: Seed client with data to backup
       file:
         path: /opt/testapp
@@ -33,7 +22,7 @@
       vars:
         rss_server: server
         script_dest: /opt/testapp/backup
-        src: /opt/testapp/
+        src: /opt/testapp
         dest: /
         # Test that it runs pre/post commands, and doesn't break if unspecified
         presync:
@@ -42,15 +31,17 @@
     - name: Test running backup script
       command: /opt/testapp/backup
 
-    - name: Remove client app to test restore
-      file:
-        path: /opt/testapp
-        state: absent
+    - name: Trying to pull root should return list of modules
+      command: 'rsync --archive --delete -e="ssh -i ~/.ssh/testapp" rsync://root@server/ /opt/testapp/'
+      register: authorized
+      failed_when: authorized.stdout is not match("^testapp\s*$")
 
-    - name: Test typical restore-sync for initial data population
-      include_role:
-        name: rsync_server
-        tasks_from: sync.yml
-      vars:
-        src: /
-        dest: /opt/testapp/
+    - name: Verify paths outside the client module are not accessible
+      command: 'rsync --archive --delete -e="ssh -i ~/.ssh/testapp" rsync://root@server/{{ item }} /opt/testapp/'
+      register: authorized
+      failed_when: authorized.rc == 0
+      loop:
+        - 'etc/'
+        - '../'
+        - 'testapp/../testapp/'
+        - 'testapp/../../../etc/'
