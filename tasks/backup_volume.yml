@@ -1,0 +1,14 @@
+- name: Check for docker image
+  command: docker images -q rss-sync-minion
+  register: docker_image_stat
+
+- include_role:
+    name: rsync_server
+    tasks_from: build_docker.yml
+  when: docker_image_stat.stdout == ''
+
+- name: Install backup script
+  template:
+    src: backup_volume.sh.j2
+    dest: '{{ script_dest }}'
+    mode: '755'

@@ -1,0 +1,22 @@
+- block:
+    - name: create temporary build directory
+      tempfile:
+        state: directory
+      register: build_dir
+
+    - name: Install minion build file
+      copy:
+        src: rss-sync-minion
+        dest: '{{ build_dir.path }}/Dockerfile'
+
+    - name: Build sync minion
+      docker_image:
+        name: rss-sync-minion
+        build:
+          path: '{{ build_dir.path }}'
+        source: build
+  always:
+    - name: Remove build directory
+      file:
+        path: '{{ build_dir.path }}'
+        state: absent
