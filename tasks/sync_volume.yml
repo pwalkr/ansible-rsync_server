@@ -1,0 +1,10 @@
+- name: Create volume '{{ volume }}'
+  docker_volume:
+    name: '{{ volume }}'
+  register: volume_created
+
+- name: 'Sync volume {{ volume }}'
+  include_role:
+    name: rsync_server
+    tasks_from: sync_volume_data.yml
+  when: volume_created is changed

@@ -27,6 +27,7 @@ install:
 script:
   - docker exec controller env ANSIBLE_FORCE_COLOR=1 ansible-playbook /etc/ansible/roles/rsync_server/tests/server.yml -v --syntax-check
   - docker exec controller env ANSIBLE_FORCE_COLOR=1 ansible-playbook /etc/ansible/roles/rsync_server/tests/client.yml -v --syntax-check
+  - docker exec controller env ANSIBLE_FORCE_COLOR=1 ansible-playbook /etc/ansible/roles/rsync_server/tests/docker.yml -v --syntax-check
 
   - docker exec controller env ANSIBLE_FORCE_COLOR=1 ansible-playbook /etc/ansible/roles/rsync_server/tests/server.yml -v
   - docker exec controller env ANSIBLE_FORCE_COLOR=1 ansible-playbook /etc/ansible/roles/rsync_server/tests/client.yml -v

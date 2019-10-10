@@ -43,6 +43,39 @@ with `command=` restriction.
 
 ### Utilities
 
+#### backup.yml
+
+Install a simple backup script to backup folder to server. `script_dest` can
+then be called periodically by cron or systemd timer.
+
+    - include_role:
+        name: rsync_server
+        tasks_from: backup.yml
+      vars:
+        script_dest: /usr/local/bin/backup-app.sh
+        src: /opt/app/  # Path on client. Mind the trailing slash
+        dest: /         # Path on server, relative to root of client's folder
+        presync: []     # optional array of shell commands to run before backup
+        postsync: []    # optional array of shell commands to run after backup
+
+#### backup_volume.yml
+
+Install a simple backup script to backup a docker volume to server.
+`script_dest` can then be called periodically by cron or systemd timer. The
+backup is performed using another container. The presync and postsync commands
+are run on the client (outside any container). Typical use would be to pause and
+unpause the container(s) using the volume.
+
+    - include_role:
+        name: rsync_server
+        tasks_from: backup.yml
+      vars:
+        script_dest: /usr/local/bin/backup-app.sh
+        volume: appvolume  # Name of docker volume
+        dest: /            # Path on server, relative to root of client's folder
+        presync: []        # optional shell commands to run before backup
+        postsync: []       # optional shell commands to run after backup
+
 #### keyscan.yml
 
 These tasks will scan `rss_server` from the client and install the keys to
@@ -66,3 +99,15 @@ or does not exist.
       vars:
         src: /          # Path on server, relative to root of client's folder
         dest: /opt/app  # Path on client
+
+#### sync_volume.yml
+
+Synchronize a docker volume from a folder on the server. This only syncs if the
+volume does not exist. It will not check volume contents.
+
+    - include_role:
+        name: rsync_server
+        tasks_from: sync_volume.yml
+      vars:
+        src: /             # Path on server, relative to root of client's folder
+        volume: appvolume  # Name of docker volume to create

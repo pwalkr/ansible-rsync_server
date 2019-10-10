@@ -1,0 +1,24 @@
+- name: Check for docker image
+  command: docker images -q rss-sync-minion
+  register: docker_image_stat
+
+- include_role:
+    name: rsync_server
+    tasks_from: build_docker.yml
+  when: docker_image_stat.stdout == ''
+
+- name: Run minion container to sync volume
+  docker_container:
+    name: rss-sync-minion
+    image: rss-sync-minion
+    volumes:
+      - '{{ volume }}:/mnt'
+      - '~/.ssh:/root/.ssh'
+    command:
+      - rsync
+      - --archive
+      - --rsh
+      - '"ssh -i {{ client_key_file }}"'
+      - 'rsync://{{ hostvars[rss_server].ansible_host | default(rss_server) }}/{{ client_name }}/{{ src }}'
+      - /mnt
+    auto_remove: yes
