@@ -17,7 +17,7 @@
 - name: 'Restore {{ dest }} if not already present'
   synchronize:
     mode: pull
-    src: 'rsync://{{ rss_user }}@{{ hostvars[rss_server].ansible_host | default(rss_server) }}/{{ client_name }}/{{ src }}'
+    src: 'rsync://{{ rss_user }}@{{ rss_server_host }}/{{ client_name }}/{{ src }}'
     dest: '{{ dest }}'
     # private_key gets ignored here
     rsync_opts:

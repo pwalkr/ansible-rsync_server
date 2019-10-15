@@ -1,11 +1,12 @@
 - name: Check for docker image
   command: docker images -q rss-sync-minion
   register: docker_image_stat
+  changed_when: docker_image_stat.stdout == ''
 
 - include_role:
     name: rsync_server
     tasks_from: build_docker.yml
-  when: docker_image_stat.stdout == ''
+  when: docker_image_stat is changed
 
 - name: Install backup script
   template:

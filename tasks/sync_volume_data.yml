@@ -19,6 +19,6 @@
       - --archive
       - --rsh
       - '"ssh -i {{ client_key_file }}"'
-      - 'rsync://{{ hostvars[rss_server].ansible_host | default(rss_server) }}/{{ client_name }}/{{ src }}'
+      - 'rsync://{{ rss_server_host }}/{{ client_name }}/{{ src }}'
       - /mnt
     auto_remove: yes
