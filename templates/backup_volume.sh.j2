@@ -8,9 +8,7 @@
 
 docker run --rm --volume {{ volume }}:/mnt --volume ~/.ssh:/root/.ssh \
     rss-sync-minion rsync --archive --delete \
-    --rsh="ssh -i {{ client_key_file }}" \
-    /mnt/ \
-    rsync://{{ rss_server_host }}/{{ client_name }}/{{ dest }}
+    /mnt/ {{ client_rsh_remote }}/{{ dest }}
 
 {% if postsync is defined %}
 {% for command in postsync %}

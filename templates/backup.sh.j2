@@ -6,9 +6,7 @@
 {% endfor %}
 {% endif %}
 
-rsync --archive --delete --rsh="ssh -i {{ client_key_file }}" \
-    {{ src }} \
-    rsync://{{ rss_server_host }}/{{ client_name }}/{{ dest }}
+rsync --archive --delete {{ src }} {{ client_rsh_remote }}/{{ dest }}
 
 {% if postsync is defined %}
 {% for command in postsync %}
