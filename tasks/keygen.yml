@@ -11,7 +11,7 @@
   register: keygen
 
 - name: Copy public key
-  command: 'cat {{ client_key_file }}.pub'
+  command: 'ssh-keygen -y -f {{ client_key_file }}'
   register: public_key
   changed_when: keygen is changed
 - set_fact:
