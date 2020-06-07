@@ -31,7 +31,7 @@ the server host. Setup with defaults (or "optional" if not required):
     - include_role:
         name: rsync_server
         tasks_from: client.yml
-    - vars:
+      vars:
         client_name:    # name of backup set
         rss_server:     # the ansible host providing main rsync_server role
         rss_user: root  # user as which the rsync server runs
