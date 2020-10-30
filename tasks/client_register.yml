@@ -1,0 +1,21 @@
+- include_vars: client.yml
+
+- name: Create client backup root
+  file:
+    path: '{{ rss_root }}/{{ client_name }}'
+    owner: '{{ rss_user }}'
+    state: directory
+  delegate_to: '{{ rss_server }}'
+
+- name: Install rsync daemon conf
+  template:
+    src: rsyncd.j2
+    dest: '{{ client_rsyncd_conf }}'
+  delegate_to: '{{ rss_server }}'
+
+- name: Set authorized_keys command
+  authorized_key:
+    user: '{{ rss_user }}'
+    key: '{{ client_pub_key }}'
+    key_options: 'command="/usr/bin/rsync --server --daemon --config={{ client_rsyncd_conf }} .",restrict'
+  delegate_to: '{{ rss_server }}'

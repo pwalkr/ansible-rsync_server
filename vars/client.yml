@@ -1,0 +1,2 @@
+client_rsyncd_conf: '{{ rss_root }}/{{ client_name }}.conf'
+

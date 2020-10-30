@@ -5,25 +5,4 @@
 - name: Generate client ssh key
   include_tasks: keygen.yml
 
-- name: Register client with server
-  block:
-    - name: Create client backup root
-      file:
-        path: '{{ rss_root }}/{{ client_name }}'
-        owner: '{{ rss_user }}'
-        state: directory
-
-    - set_fact:
-        rsyncd_conf: '{{ rss_root }}/{{ client_name }}.conf'
-
-    - name: Install rsync daemon conf
-      template:
-        src: rsyncd.j2
-        dest: '{{ rsyncd_conf }}'
-
-    - name: Set authorized_keys command
-      authorized_key:
-        user: '{{ rss_user }}'
-        key: '{{ client_pub_key }}'
-        key_options: 'command="/usr/bin/rsync --server --daemon --config={{ rsyncd_conf }} .",restrict'
-  delegate_to: '{{ rss_server }}'
+- include_tasks: client_register.yml
