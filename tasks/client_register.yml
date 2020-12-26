@@ -13,9 +13,33 @@
     dest: '{{ client_rsyncd_conf }}'
   delegate_to: '{{ rss_server }}'
 
-- name: Set authorized_keys command
-  authorized_key:
-    user: '{{ rss_user }}'
-    key: '{{ client_pub_key }}'
-    key_options: 'command="/usr/bin/rsync --server --daemon --config={{ client_rsyncd_conf }} .",restrict'
+- name: Get rss_user ssh directory
+  when: rss_authorized_keys is undefined
+  command: 'printf ~{{ rss_user }}/.ssh/authorized_keys'
+  register: echo_user
+  delegate_to: '{{ rss_server }}'
+
+- name: Set rss_user ssh directory
+  when: rss_authorized_keys is undefined
+  set_fact:
+    rss_authorized_keys: '{{ echo_user.stdout }}'
+  delegate_to: '{{ rss_server }}'
+
+- name: Append authorized_keys command
+  when: not client_exclusive
+  lineinfile:
+    path: '{{ rss_authorized_keys }}'
+    line: 'command="/usr/bin/rsync --server --daemon --config={{ client_rsyncd_conf }} .",restrict {{ client_pub_key }}'
+    # There's more than a few permissions to set if this doesn't exist
+    create: no
+  delegate_to: '{{ rss_server }}'
+
+- name: Set exclusive authorized_keys command
+  when: client_exclusive
+  lineinfile:
+    path: '{{ rss_authorized_keys }}'
+    regexp: '{{ (["=",client_rsyncd_conf," "]|join) if client_exclusive else none }}'
+    line: 'command="/usr/bin/rsync --server --daemon --config={{ client_rsyncd_conf }} .",restrict {{ client_pub_key }}'
+    # There's more than a few permissions to set if this doesn't exist
+    create: no
   delegate_to: '{{ rss_server }}'

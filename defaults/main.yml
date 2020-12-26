@@ -15,3 +15,6 @@ client_key_file: '~/.ssh/{{ client_name }}'
 #     rsync --archive /path/src/ {{ client_rsh_remote }}/dest/
 #     rsync --archive {{ client_rsh_remote }}/src/ /path/dest/
 client_rsh_remote: '--rsh="ssh -i {{ client_key_file }}" rsync://{{ rss_server_host }}/{{ client_name }}'
+
+# Set `true` to ensure only one key can access {{ client_name }} files at any given time.
+client_exclusive: false
