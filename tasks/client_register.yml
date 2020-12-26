@@ -2,7 +2,7 @@
 
 - name: Create client backup root
   file:
-    path: '{{ rss_root }}/{{ client_name }}'
+    path: '{{ client_root }}'
     state: directory
   delegate_to: '{{ rss_server }}'
   register: backup_root
@@ -10,7 +10,7 @@
 - name: Set client backup root ownership
   when: backup_root is changed
   file:
-    path: '{{ rss_root }}/{{ client_name }}'
+    path: '{{ client_root }}'
     state: directory
     owner: '{{ rss_user }}'
   delegate_to: '{{ rss_server }}'
