@@ -2,7 +2,7 @@
 
 - name: Create client backup root
   file:
-    path: '{{ rss_root }}/{{ client_name }}'
+    path: '{{ client_root }}'
     owner: '{{ rss_user }}'
     state: directory
   delegate_to: '{{ rss_server }}'
