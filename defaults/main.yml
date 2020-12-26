@@ -8,6 +8,9 @@ rss_root: /opt/rsync_server
 # Used for client -> server operations, should be resolvable by client
 rss_server_host: '{{ hostvars[rss_server].ansible_host | default(rss_server) }}'
 
+# Set true to scan the rss server from the client and save in known_hosts
+client_host_scan: false
+
 # Path to private key on client
 client_key_file: '~/.ssh/{{ client_name }}'
 

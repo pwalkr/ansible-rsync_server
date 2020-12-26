@@ -6,3 +6,12 @@
   include_tasks: keygen.yml
 
 - include_tasks: client_register.yml
+
+- name: Scan new host for ssh key
+  when: client_host_scan
+  lineinfile:
+    dest: ~/.ssh/known_hosts
+    regexp: '^{{ rss_server_host }} '
+    line: '{{ lookup("pipe", "ssh-keyscan -t rsa " + rss_server_host) }}'
+    create: yes
+    state: present

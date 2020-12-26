@@ -33,6 +33,8 @@ the server host. Setup with defaults (or "optional" if not required):
         tasks_from: client.yml
       vars:
         client_name:    # name of backup set
+        # Scan server from client and add to known_hosts
+        client_host_scan: '{{ true if host_just_created else false }}'
         rss_server:     # the ansible host providing main rsync_server role
         rss_user: root  # user as which the rsync server runs
         rss_root: /opt/rsync_server  # root path to backups on server
