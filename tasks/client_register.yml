@@ -27,3 +27,16 @@
     key: '{{ client_pub_key }}'
     key_options: 'command="/usr/bin/rsync --server --daemon --config={{ client_rsyncd_conf }} .",restrict'
   delegate_to: '{{ rss_server }}'
+
+- name: Add users for uid matching
+  user:
+    name: '{{ item }}'
+    create_home: false
+  loop: '{{ client_users | default([]) }}'
+  delegate_to: '{{ rss_server }}'
+
+- name: Add groups for uid matching
+  group:
+    name: '{{ item }}'
+  loop: '{{ client_groups | default([]) }}'
+  delegate_to: '{{ rss_server }}'
