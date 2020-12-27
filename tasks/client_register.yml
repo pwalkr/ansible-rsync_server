@@ -3,8 +3,16 @@
 - name: Create client backup root
   file:
     path: '{{ rss_root }}/{{ client_name }}'
-    owner: '{{ rss_user }}'
     state: directory
+  delegate_to: '{{ rss_server }}'
+  register: backup_root
+
+- name: Set client backup root ownership
+  when: backup_root is changed
+  file:
+    path: '{{ rss_root }}/{{ client_name }}'
+    state: directory
+    owner: '{{ rss_user }}'
   delegate_to: '{{ rss_server }}'
 
 - name: Install rsync daemon conf
