@@ -36,6 +36,8 @@ the server host. Setup with defaults (or "optional" if not required):
         rss_server:     # the ansible host providing main rsync_server role
         rss_user: root  # user as which the rsync server runs
         rss_root: /opt/rsync_server  # root path to backups on server
+        # Use this if running server on an alpine host
+        use_chroot: false
 
 An ssh key will be created and installed at `~/.ssh/{{ client_name }}` on the
 client, and the public key will be installed to the server's `authorized_keys`
