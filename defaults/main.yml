@@ -5,6 +5,9 @@ rss_user: root
 # Path to root of rsync_server backups
 rss_root: /opt/rsync_server
 
+# Centralized place to put configs outside of backup root
+rss_config: /var/lib/rsync-server
+
 # Used for client -> server operations, should be resolvable by client
 rss_server_host: '{{ hostvars[rss_server].ansible_host | default(rss_server) }}'
 

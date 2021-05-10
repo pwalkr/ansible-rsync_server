@@ -2,6 +2,11 @@
   package:
     name: rsync
 
+- name: 'Create config directory {{ rss_config }}'
+  file:
+    path: '{{ rss_config }}'
+    state: directory
+
 - name: 'Create server root ({{ rss_root }})'
   file:
     path: '{{ rss_root }}'

@@ -1,2 +1,2 @@
 client_root: '{{ rss_root }}/{{ client_name }}'
-client_rsyncd_conf: '{{ rss_root }}/{{ client_name }}.conf'
+client_rsyncd_conf: '{{ rss_config }}/{{ client_name }}.conf'
