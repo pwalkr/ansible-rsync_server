@@ -1,3 +1,7 @@
+# Variables:
+#     client_name      name of client/backup
+#     client_key_file  path to ssh key (does not need to exist)
+
 - name: Install rsync
   package:
     name: rsync

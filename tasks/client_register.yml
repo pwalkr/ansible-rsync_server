@@ -1,3 +1,9 @@
+# Variables:
+#   client_name:     name of client/backup
+#   client_pub_key:  ssh public key
+#   client_users:    optional list of users to create for uid sync
+#   client_groups:   optional list of groups to create for gid sync
+
 - include_vars: client.yml
 
 - name: Create client backup root
