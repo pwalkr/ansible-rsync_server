@@ -1,6 +1,7 @@
 # Variables:
 #     client_name      name of client/backup
 #     client_key_file  path to ssh key (does not need to exist)
+#     client_volumes   optional map of volumes to restore for initial sync
 
 - name: Install rsync
   package:
@@ -19,3 +20,10 @@
     line: '{{ lookup("pipe", "ssh-keyscan -t rsa " + rss_server_host) }}'
     create: yes
     state: present
+
+- name: Restore volumes
+  include_tasks: sync.yml
+  vars:
+    src: '{{ item.src | default("/") }}'
+    dest: '{{ item.dest }}'
+  loop: '{{ client_volumes | default([]) }}'
