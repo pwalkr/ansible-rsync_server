@@ -1,0 +1,16 @@
+# Variables:
+#     client_name
+#     client_key_file
+#     src
+#     dest  Optional destination (Default `/`)
+#     delete  Optionally add delete flag for sync (default true)
+
+- name: 'push {{ src }} to {{ rss_server }}:{{ client_name }}/{{ dest | default("") }}'
+  ansible.posix.synchronize:
+    src: '{{ src }}'
+    dest: 'rsync://{{ rss_user }}@{{ rss_server_host }}/{{ client_name }}/{{ dest | default("") }}'
+    delete: '{{ delete | default(true) }}'
+    # private_key gets ignored when delegated
+    rsync_opts:
+      - '--rsh=ssh -i {{ client_key_file }}'
+  delegate_to: '{{ inventory_hostname }}'
